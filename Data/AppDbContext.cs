@@ -8,14 +8,14 @@ namespace GestaoFinanca.Data
     {
         public AppDbContext(DbContextOptions options) : base(options){}
 
-        public DbSet<Users> DbGestaoFinanca { get; set; }
+        public DbSet<Users> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             _ = modelBuilder.Entity<Users>().HasData([
-                new Users { Id = 1, Name = "admin", Email = "admin@example.com", PasswordHash = PasswordHelper.HashPassword("admin123") }
+                new Users { Id = 1, Name = "admin", Email = "admin@example.com", Password = PasswordHelper.HashPassword("admin123"), Role = UserRole.Admin }
             ]);
         }
         

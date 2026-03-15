@@ -10,7 +10,7 @@ namespace GestaoFinanca.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class UsersController : ControllerBase
     {
         private readonly AppDbContext _appDbContext;
@@ -29,7 +29,7 @@ namespace GestaoFinanca.Controllers
 
             user.Password = PasswordHelper.HashPassword(user.Password);
 
-            _appDbContext.DbGestaoFinanca.Add(user);
+            _appDbContext.Users.Add(user);
             await _appDbContext.SaveChangesAsync();
             return Created("User added successfully!",user);
         }
@@ -37,7 +37,7 @@ namespace GestaoFinanca.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserResponse>>> GetUsers()
         {
-            var users = await _appDbContext.DbGestaoFinanca
+            var users = await _appDbContext.Users
             .Select(u => new UserResponse
             {
                 Id = u.Id,
@@ -50,7 +50,7 @@ namespace GestaoFinanca.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UserResponse>> GetUser(int id)
         {
-            var user = await _appDbContext.DbGestaoFinanca
+            var user = await _appDbContext.Users
             .Where(u => u.Id == id)
             .Select(u => new UserResponse { Id = u.Id, Name = u.Name, Email = u.Email })
             .FirstOrDefaultAsync();
@@ -70,7 +70,7 @@ namespace GestaoFinanca.Controllers
                 return BadRequest();
             }
 
-            var existingUser = await _appDbContext.DbGestaoFinanca.FindAsync(id);
+            var existingUser = await _appDbContext.Users.FindAsync(id);
             if (existingUser == null)
             {
                 return NotFound("User not found.");
@@ -86,13 +86,13 @@ namespace GestaoFinanca.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            var user = await _appDbContext.DbGestaoFinanca.FindAsync(id);
+            var user = await _appDbContext.Users.FindAsync(id);
             if (user == null)
             {
                 return NotFound("User not found!");
             }
 
-            _appDbContext.DbGestaoFinanca.Remove(user);
+            _appDbContext.Users.Remove(user);
             await _appDbContext.SaveChangesAsync();
             return Ok("User deleted successfully!");
         }

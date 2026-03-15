@@ -15,7 +15,7 @@ namespace GestaoFinanca.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "DbGestaoFinanca",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -24,26 +24,27 @@ namespace GestaoFinanca.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Email = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    PasswordHash = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                    Password = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Role = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DbGestaoFinanca", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.InsertData(
-                table: "DbGestaoFinanca",
-                columns: new[] { "Id", "Email", "Name", "PasswordHash" },
-                values: new object[] { 1, "admin@example.com", "admin", "$2a$11$FAyf1/uxMuc7rHCvEWiIDOc4OHLnP3gr8fG5CSEMHrCn/QPxrzfSe" });
+                table: "Users",
+                columns: new[] { "Id", "Email", "Name", "Password", "Role" },
+                values: new object[] { 1, "admin@example.com", "admin", "$2a$11$avdgjU4XicYMCnf3KMBta.NGCoR9FCuPABm0moOf2HkPg/fw/GNri", 1 });
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "DbGestaoFinanca");
+                name: "Users");
         }
     }
 }

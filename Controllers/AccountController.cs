@@ -30,5 +30,24 @@ namespace GestaoFinanca.Controllers
             return Ok(result);
 
         }
+
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public async Task<ActionResult<RegisterResponse>> Register([FromBody] RegisterRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _jwtService.Register(request);
+            
+            if (result is null)
+            {
+                return BadRequest("User with this email already exists!");
+            }
+
+            return Ok(result);
+        }
     }
 }

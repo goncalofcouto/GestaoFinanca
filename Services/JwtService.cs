@@ -25,7 +25,7 @@ namespace GestaoFinanca.Services
             {
                 return null;
             }
-            var user = await _appDbContext.DbGestaoFinanca.SingleOrDefaultAsync(u => u.Email == request.Email);
+            var user = await _appDbContext.Users.SingleOrDefaultAsync(u => u.Email == request.Email);
 
             if (user == null || !PasswordHelper.VerifyPassword(request.Password, user.Password))
             {
@@ -42,7 +42,8 @@ namespace GestaoFinanca.Services
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.Email, user.Email)
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Role, user.Role.ToString())
                 }),
                 Expires = tokenExpiry,
                 Issuer = issuer,
@@ -61,6 +62,32 @@ namespace GestaoFinanca.Services
                 ExpiresIn = (int)tokenExpiry.Subtract(DateTime.UtcNow).TotalSeconds
             };
             
+        }
+
+
+        public async Task<RegisterResponse> Register(RegisterRequest request)
+        {
+            var exists = await _appDbContext.Users.AnyAsync(u => u.Email == request.Email);
+            if (exists)
+            {
+                return null;
+            }
+
+            var user = new Users
+            {
+                Name = request.Name,
+                Email = request.Email,
+                Password = PasswordHelper.HashPassword(request.Password),
+                Role = UserRole.Client
+            };
+            _appDbContext.Users.Add(user);
+            await _appDbContext.SaveChangesAsync();
+
+            return new RegisterResponse
+            {
+                Email = user.Email,
+                Name = user.Name
+            };
         }
     }
 
