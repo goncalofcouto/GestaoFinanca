@@ -9,6 +9,7 @@ namespace GestaoFinanca.Data
         public AppDbContext(DbContextOptions options) : base(options){}
 
         public DbSet<Users> Users { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -18,6 +19,5 @@ namespace GestaoFinanca.Data
                 new Users { Id = 1, Name = "admin", Email = "admin@example.com", Password = PasswordHelper.HashPassword("admin123"), Role = UserRole.Admin }
             ]);
         }
-        
     }
 }
