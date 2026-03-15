@@ -1,6 +1,8 @@
 
 using GestaoFinanca.Data;
 using GestaoFinanca.Models;
+using GestaoFinanca.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +10,7 @@ namespace GestaoFinanca.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly AppDbContext _appDbContext;
@@ -24,22 +27,34 @@ namespace GestaoFinanca.Controllers
                 return BadRequest(ModelState);
             }
 
+            user.Password = PasswordHelper.HashPassword(user.Password);
+
             _appDbContext.DbGestaoFinanca.Add(user);
             await _appDbContext.SaveChangesAsync();
             return Created("User added successfully!",user);
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Users>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserResponse>>> GetUsers()
         {
-            var users = await _appDbContext.DbGestaoFinanca.ToListAsync();
+            var users = await _appDbContext.DbGestaoFinanca
+            .Select(u => new UserResponse
+            {
+                Id = u.Id,
+                Name = u.Name,
+                Email = u.Email
+            }).ToListAsync();
             return Ok(users);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Users>> GetUser(int id)
+        public async Task<ActionResult<UserResponse>> GetUser(int id)
         {
-            var user = await _appDbContext.DbGestaoFinanca.FindAsync(id);
+            var user = await _appDbContext.DbGestaoFinanca
+            .Where(u => u.Id == id)
+            .Select(u => new UserResponse { Id = u.Id, Name = u.Name, Email = u.Email })
+            .FirstOrDefaultAsync();
+
             if (user == null)
             {
                 return NotFound("User not found!");
@@ -50,16 +65,22 @@ namespace GestaoFinanca.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] Users updatedUser)
         {
-            var user = await _appDbContext.DbGestaoFinanca.FindAsync(id);
-            if (user == null)
+            if (id != updatedUser.Id)
             {
-                return NotFound("User not found!");
+                return BadRequest();
             }
 
-            _appDbContext.Entry(user).CurrentValues.SetValues(updatedUser);
+            var existingUser = await _appDbContext.DbGestaoFinanca.FindAsync(id);
+            if (existingUser == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            existingUser.Name = updatedUser.Name;
+            existingUser.Password = PasswordHelper.HashPassword(updatedUser.Password);
 
             await _appDbContext.SaveChangesAsync();
-            return StatusCode(201, user);
+            return Ok(existingUser);
         }
 
         [HttpDelete("{id}")]

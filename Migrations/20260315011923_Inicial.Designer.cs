@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestaoFinanca.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260314180810_Inicial")]
+    [Migration("20260315011923_Inicial")]
     partial class Inicial
     {
         /// <inheritdoc />
@@ -28,17 +28,30 @@ namespace GestaoFinanca.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Nome")
-                        .HasColumnType("longtext");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
 
-                    b.Property<string>("Senha")
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
                     b.ToTable("DbGestaoFinanca");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "admin@example.com",
+                            Name = "admin",
+                            PasswordHash = "$2a$11$FAyf1/uxMuc7rHCvEWiIDOc4OHLnP3gr8fG5CSEMHrCn/QPxrzfSe"
+                        });
                 });
 #pragma warning restore 612, 618
         }

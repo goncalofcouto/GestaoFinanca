@@ -20,11 +20,11 @@ namespace GestaoFinanca.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Nome = table.Column<string>(type: "longtext", nullable: true)
+                    Name = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Email = table.Column<string>(type: "longtext", nullable: true)
+                    Email = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Senha = table.Column<string>(type: "longtext", nullable: true)
+                    PasswordHash = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -32,6 +32,11 @@ namespace GestaoFinanca.Migrations
                     table.PrimaryKey("PK_DbGestaoFinanca", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.InsertData(
+                table: "DbGestaoFinanca",
+                columns: new[] { "Id", "Email", "Name", "PasswordHash" },
+                values: new object[] { 1, "admin@example.com", "admin", "$2a$11$FAyf1/uxMuc7rHCvEWiIDOc4OHLnP3gr8fG5CSEMHrCn/QPxrzfSe" });
         }
 
         /// <inheritdoc />

@@ -10,7 +10,7 @@ namespace GestaoFinanca.Models
 
         [Required(ErrorMessage = "Name is required!")]
         [MaxLength(30, ErrorMessage = "Name cannot exceed 30 characters!")]
-        public string Nome { get; set; }
+        public string Name { get; set; }
 
         [Required(ErrorMessage = "Email is required!")]
         [EmailAddress(ErrorMessage = "Invalid email format!")]
@@ -18,7 +18,7 @@ namespace GestaoFinanca.Models
 
         [Required(ErrorMessage = "Password is required!")]
         [MinLength(6, ErrorMessage = "Password must be at least 6 characters long!")]
-        public string Senha { get; set; }
+        public string Password { get; set; }
 
     }
 }
