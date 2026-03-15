@@ -166,5 +166,3 @@ curl -X POST http://localhost:5270/api/transactions/expense \
 - Move secrets (JWT key and DB password) to environment variables.
 - Add automated tests (unit and integration).
 
-## License
-Study project (junior level). Adjust the license as needed.
