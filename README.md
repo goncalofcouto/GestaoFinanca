@@ -139,7 +139,7 @@ Note: for `/income` and `/expense` endpoints, `Type` is set by the backend.
 ```bash
 curl -X POST http://localhost:5270/api/auth/register \
   -H "Content-Type: application/json" \
-  -d '{"name":"Joao","email":"joao@email.com","password":"123456"}'
+  -d '{"name":"Couto","email":"couto@email.com","password":"123456"}'
 ```
 
 2. Login:
@@ -147,7 +147,7 @@ curl -X POST http://localhost:5270/api/auth/register \
 ```bash
 curl -X POST http://localhost:5270/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"joao@email.com","password":"123456"}'
+  -d '{"email":"couto@email.com","password":"123456"}'
 ```
 
 3. Create an expense (with token):
